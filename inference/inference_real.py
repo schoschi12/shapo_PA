@@ -3,6 +3,8 @@ import cv2
 import argparse
 import pathlib
 
+import time
+
 import numpy as np
 import torch
 import open3d as o3d
@@ -51,11 +53,22 @@ def inference(
     if use_gpu:
       input = input.to(torch.device('cuda:0'))
     with torch.no_grad():
+      start = time.time()
       seg_output, _, _ , pose_output = model.forward(input)
       shape_emb_outputs, appearance_emb_outputs, abs_pose_outputs, img_output, scores_out, output_indices = pose_output.compute_shape_pose_and_appearance(min_confidence,is_target = False)
+      end = time.time()
+      print("time forward pass: ", (end-start)*1000, "ms = ", 1/(end-start), " fps")
       #shape_emb_outputs, appearance_emb_outputs, abs_pose_outputs, scores_out, output_indices = nms(
       #  shape_emb_outputs, appearance_emb_outputs, abs_pose_outputs, scores_out, output_indices, _CAMERA
       #  )
+    '''
+    print(shape_emb_outputs[0])
+    print(appearance_emb_outputs[0])
+    print(abs_pose_outputs[0])
+    print(img_output[0])
+    print(scores_out[0])
+    print(output_indices[0])
+    '''
 
     # get masks and masked pointclouds of each object in the image
     depth_ = np.array(depth, dtype=np.float32)*255.0
@@ -125,6 +138,11 @@ def inference(
         sRT = abs_pose_outputs[j].camera_T_object @ abs_pose_outputs[j].scale_matrix
         transformed_axes = transform_coordinates_3d(xyz_axis, sRT)
         axes.append(calculate_2d_projections(transformed_axes, _CAMERA.K_matrix[:3,:3]))
+    '''
+    print("box_obb: ", box_obb)
+    print("xyz_axis: ", xyz_axis)
+    print("axes: ", axes)
+    '''
 
     #o3d.visualization.draw_geometries(rotated_pcds)
     #save_projected_points(img_vis, points_2d, str(output_path), i)
@@ -151,7 +169,7 @@ if __name__ == '__main__':
   app_group = parser.add_argument_group('app')
   app_group.add_argument('--app_output', default='inference', type=str)
   app_group.add_argument('--result_name', default='ShAPO_Real', type=str)
-  app_group.add_argument('--data_dir', default='nocs_data', type=str)
+  app_group.add_argument('--data_dir', default='../nocs_data', type=str)
 
   hparams = parser.parse_args()
   print(hparams)

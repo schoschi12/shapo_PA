@@ -345,7 +345,7 @@ def get_aligned_masks_segout(masks, output_indices, depth):
       new_masks.append(mask_out[min_index, :,:])
     else: 
       new_masks.append(None)
-  masks = np.array(new_masks)
+  masks = np.array(new_masks, dtype=object)
   return masks
 
 def get_masked_textured_pointclouds(masks, depth,rgb, n_pts=2048, camera= None):
