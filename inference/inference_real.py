@@ -164,6 +164,10 @@ def inference(
     print("done with image: ", i )
 
 if __name__ == '__main__':
+
+  num_of_gpus = torch.cuda.device_count()
+  print(num_of_gpus)
+
   parser = argparse.ArgumentParser(fromfile_prefix_chars='@')
   common.add_train_args(parser)
   app_group = parser.add_argument_group('app')

@@ -8,6 +8,7 @@ import urllib3
 # import boto3
 import numpy as np
 import zstandard as zstd
+import os
 
 
 def get_uid():
@@ -305,9 +306,11 @@ class LocalDataset:
 
   def list(self):
     handles = []
+    #print('datset_path', os.path.abspath(self.dataset_path), '\ncontent', os.listdir(self.dataset_path))
     for path in self.dataset_path.glob('*.pickle.zstd'):
-      uid = path.name.partition('.')[0]
-      handles.append(LocalReadHandle(self.dataset_path, uid))
+    #for path in self.dataset_path.glob('*.pkl'):
+        uid = path.name.partition('.')[0]
+        handles.append(LocalReadHandle(self.dataset_path, uid))
     return sorted(handles, key=operator.attrgetter('uid'))
 
   def write(self, datapoint):

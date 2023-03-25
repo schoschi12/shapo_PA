@@ -134,4 +134,4 @@ class PanopticModel(pl.LightningModule):
     if self.hparams.optim_warmup_epochs is not None and self.hparams.optim_warmup_epochs > 0:
       lr_lambda = lambda_warmup(self.hparams.optim_warmup_epochs, 0.2, lr_lambda)
     scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
-    return [optimizer], [scheduler]
+    return [optimizer]#, [scheduler]

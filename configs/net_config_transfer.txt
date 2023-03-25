@@ -1,14 +1,15 @@
---max_steps=380000
+--max_steps=240000
+--transfer=True
 --model_file=models/panoptic_net.py
 --model_name=res_fpn
 --output=results
---exp_name=ShAPO_TrainSynthetic
---train_path=file://data/CAMERA/train
+--exp_name=ShAPO_Transfer
+--train_path=file://data/Transfer/train
 --train_batch_size=32
---train_num_workers=10
---val_path=file://data/ShAPO_Data/CAMERA/val
+--train_num_workers=5
+--val_path=file://data/Transfer/test
 --val_batch_size=32
---val_num_workers=10
+--val_num_workers=5
 --optim_learning_rate=0.0006
 --optim_momentum=0.9
 --optim_weight_decay=1e-4
@@ -23,4 +24,4 @@
 --loss_appearance_emb_mult=0.1
 --loss_abs_pose_mult=0.1
 --loss_z_centroid_mult=0.1
---wandb_name=NOCS_Train_Synthetic
+--wandb_name=NOCS_Real_Finetune
